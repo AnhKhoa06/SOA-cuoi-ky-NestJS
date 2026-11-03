@@ -26,9 +26,6 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/bai-giua-ky-soa/tsconfig.app.json"
-    },
-    {
       "path": "./apps/sinh-vien-service/tsconfig.app.json"
     },
     {
@@ -42,6 +39,15 @@
     },
     {
       "path": "./apps/auth-service/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/bai-giua-ky-soa/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/api-gateway/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/api-gateway/tsconfig.app.json"
     }
   ]
 }
