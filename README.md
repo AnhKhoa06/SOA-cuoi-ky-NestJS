@@ -64,8 +64,7 @@ SOA-giua-ky-NestJS/
 │   │   ├── auth-service/        # Auth service (login, refresh, logout)
 │   │   ├── sinh-vien-service/   # Student service
 │   │   ├── de-tai-service/      # Topic service
-│   │   ├── dang-ky-service/     # Registration service
-│   │   └── bai-giua-ky-soa/     # Bản giữa kỳ (gộp), giữ để đối chiếu, sẽ xóa sau
+│   │   └── dang-ky-service/     # Registration service
 │   ├── libs/common/             # Guard JWT và @Public() dùng chung
 │   ├── .env.example             # Biến dùng chung (DB, JWT, admin)
 │   ├── nest-cli.json
@@ -166,8 +165,6 @@ npx nest start dang-ky-service
 Mỗi dịch vụ in ra dòng "đang chạy ở cổng ...". Bật `sinh-vien-service` và `de-tai-service` trước `dang-ky-service`.
 
 5. **Lấy token** bằng `POST http://localhost:3004/auth/login` với body `{ "username", "password" }` (tài khoản `ADMIN_USER`, `ADMIN_PASS` trong `.env` gốc), rồi gửi kèm `Authorization: Bearer <access_token>` khi gọi các dịch vụ.
-
-Thư mục `apps/bai-giua-ky-soa` là bản giữa kỳ, chỉ giữ để đối chiếu và không chạy trong cấu hình mới.
 
 ## Giới hạn đã biết
 

@@ -1,15 +1,24 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/bai-giua-ky-soa/src",
+  "sourceRoot": "apps/sinh-vien-service/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "builder": "rspack",
-    "tsConfigPath": "apps/bai-giua-ky-soa/tsconfig.app.json"
+    "tsConfigPath": "apps/sinh-vien-service/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/bai-giua-ky-soa",
+  "root": "apps/sinh-vien-service",
   "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
     "auth-service": {
       "type": "application",
       "root": "apps/auth-service",
@@ -17,15 +26,6 @@
       "sourceRoot": "apps/auth-service/src",
       "compilerOptions": {
         "tsConfigPath": "apps/auth-service/tsconfig.app.json"
-      }
-    },
-    "bai-giua-ky-soa": {
-      "type": "application",
-      "root": "apps/bai-giua-ky-soa",
-      "entryFile": "main",
-      "sourceRoot": "apps/bai-giua-ky-soa/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/bai-giua-ky-soa/tsconfig.app.json"
       }
     },
     "common": {
