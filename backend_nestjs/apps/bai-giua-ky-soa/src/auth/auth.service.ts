@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   private safeEqual(a: string, b: string) {
-    const x = Buffer.from(a);
+    const x = Buffer.from(a); //chuyển thành byte
     const y = Buffer.from(b);
     return x.length === y.length && timingSafeEqual(x, y);
   }
@@ -34,7 +34,6 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
-      expires_in: 15 * 60,
       user: { username, role: 'admin' },
     };
   }
