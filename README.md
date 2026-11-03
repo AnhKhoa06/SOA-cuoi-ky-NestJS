@@ -15,7 +15,6 @@ Tài liệu phân tích bài toán (yêu cầu chức năng FR-01 → FR-24, phi
 | Topic service (cổng 3002, CSDL riêng)                                                             | Xong                                                 |
 | Registration service (cổng 3003, CSDL riêng, gọi HTTP sang 3001 và 3002)                          | Xong                                                 |
 | Guard JWT dùng chung (`libs/common`), mọi dịch vụ tự kiểm tra token                               | Xong                                                 |
-| Kiểm thử Postman cho 3 dịch vụ                                                                    | Xong (xem mục Kiểm thử)                              |
 | Auth Service tách riêng (cổng 3004)                                                               | Đang làm. Hiện `/auth` còn nằm trong Student service |
 | API Gateway, service registry, message queue                                                      | Chưa làm                                             |
 | Health check, retry, circuit breaker, Docker                                                      | Chưa làm                                             |
@@ -167,19 +166,6 @@ Mỗi dịch vụ in ra dòng "đang chạy ở cổng ...". Bật `sinh-vien-se
 
 Thư mục `apps/bai-giua-ky-soa` là bản giữa kỳ, chỉ giữ để đối chiếu và không chạy trong cấu hình mới.
 
-## Kiểm thử bằng Postman (đã thực hiện)
-
-| Phép thử                                              | Kết quả                                        |
-| ----------------------------------------------------- | ---------------------------------------------- |
-| `POST :3002/de-tai` không token                       | 401 `Thiếu token`                              |
-| Đăng nhập ở :3001, dùng token gọi `POST :3002/de-tai` | 201 (token do :3001 cấp, :3002 chấp nhận)      |
-| `POST :3003/dang-ky` không token                      | 401 `Thiếu token`                              |
-| `POST :3003/dang-ky` hợp lệ                           | 201, bản ghi nằm trong `qldatn_dangky.DangKy`  |
-| Đăng ký với sinh viên hoặc đề tài không tồn tại       | 404                                            |
-| Đăng ký lần hai của cùng sinh viên                    | 409                                            |
-| Tắt :3001 rồi đăng ký                                 | 503, bật lại thì hoạt động trở lại             |
-| `SELECT`, `SHOW TABLES` trên ba CSDL                  | Bảng `SinhVien` chỉ có trong `qldatn_sinhvien` |
-
 ## Giới hạn đã biết
 
 - Frontend chưa được cập nhật: `frontend_react/src/api.js` vẫn trỏ về backend gộp của bài giữa kỳ. Sẽ trỏ về API Gateway khi có.
@@ -199,7 +185,6 @@ Thư mục `apps/bai-giua-ky-soa` là bản giữa kỳ, chỉ giữ để đố
 ## Quy tắc làm việc nhóm
 
 - Mỗi người chỉ sửa dịch vụ của mình. Phần dùng chung (`libs/common`, `nest-cli.json`, `tsconfig.json`, `frontend_react/src/api.js`, `components/`) do nhóm trưởng sửa.
-- Test API bằng Postman trước khi báo xong.
 - Tên biến môi trường và cổng không ghi cứng trong mã, đặt trong `.env`.
 
 ## Lưu ý về Git
