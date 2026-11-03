@@ -8,25 +8,26 @@ Tài liệu phân tích bài toán (yêu cầu chức năng FR-01 → FR-24, phi
 
 ## Trạng thái hiện tại (cập nhật 03/11/2026)
 
-| Hạng mục                                                                                          | Trạng thái                                           |
-| ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Tách monorepo NestJS (`apps/` + `libs/`)                                                          | Xong                                                 |
-| Student service (cổng 3001, CSDL riêng)                                                           | Xong                                                 |
-| Topic service (cổng 3002, CSDL riêng)                                                             | Xong                                                 |
-| Registration service (cổng 3003, CSDL riêng, gọi HTTP sang 3001 và 3002)                          | Xong                                                 |
-| Guard JWT dùng chung (`libs/common`), mọi dịch vụ tự kiểm tra token                               | Xong                                                 |
-| Auth Service tách riêng (cổng 3004)                                                               | Đang làm. Hiện `/auth` còn nằm trong Student service |
-| API Gateway, service registry, message queue                                                      | Chưa làm                                             |
-| Health check, retry, circuit breaker, Docker                                                      | Chưa làm                                             |
-| Cập nhật frontend để gọi hệ thống mới                                                             | Chưa làm (chờ Gateway)                               |
-| Mở rộng nghiệp vụ theo báo cáo (khoa, ngành, giảng viên, GPA, duyệt đăng ký, thông báo, thống kê) | Chưa làm                                             |
+| Hạng mục                                                                                          | Trạng thái             |
+| ------------------------------------------------------------------------------------------------- | ---------------------- |
+| Tách monorepo NestJS (`apps/` + `libs/`)                                                          | Xong                   |
+| Student service (cổng 3001, CSDL riêng)                                                           | Xong                   |
+| Topic service (cổng 3002, CSDL riêng)                                                             | Xong                   |
+| Registration service (cổng 3003, CSDL riêng, gọi HTTP sang 3001 và 3002)                          | Xong                   |
+| Guard JWT dùng chung (`libs/common`), mọi dịch vụ tự kiểm tra token                               | Xong                   |
+| Auth service (cổng 3004): đăng nhập, refresh, đăng xuất bằng tài khoản admin trong `.env`         | Xong                   |
+| API Gateway, service registry, message queue                                                      | Chưa làm               |
+| Health check, retry, circuit breaker, Docker                                                      | Chưa làm               |
+| Cập nhật frontend để gọi hệ thống mới                                                             | Chưa làm (chờ Gateway) |
+| Mở rộng nghiệp vụ theo báo cáo (khoa, ngành, giảng viên, GPA, duyệt đăng ký, thông báo, thống kê) | Chưa làm               |
 
 ## Kiến trúc hiện tại
 
 ```
 Postman / Frontend
    │  HTTP/REST (JSON, Bearer JWT)
-   ├──► sinh-vien-service  :3001 ── MySQL: qldatn_sinhvien   (kèm /auth, tạm thời)
+   ├──► auth-service       :3004 ── (chưa có CSDL, tài khoản admin lấy từ .env)
+   ├──► sinh-vien-service  :3001 ── MySQL: qldatn_sinhvien
    ├──► de-tai-service     :3002 ── MySQL: qldatn_detai
    └──► dang-ky-service    :3003 ── MySQL: qldatn_dangky
               │  HTTP GET, chuyển tiếp header Authorization
@@ -45,12 +46,12 @@ Kiến trúc đích theo báo cáo: Auth, Academic, Topic, Registration, Notific
 
 ## Các dịch vụ
 
-| Dịch vụ          | Thư mục                  | Cổng | CSDL                            | Phụ trách |
-| ---------------- | ------------------------ | ---- | ------------------------------- | --------- |
-| Student          | `apps/sinh-vien-service` | 3001 | `qldatn_sinhvien`               | Khương    |
-| Topic            | `apps/de-tai-service`    | 3002 | `qldatn_detai`                  | Khang     |
-| Registration     | `apps/dang-ky-service`   | 3003 | `qldatn_dangky`                 | Khoa      |
-| Auth (đang tách) | `apps/auth-service`      | 3004 | không dùng CSDL ở giai đoạn đầu | Nhóm      |
+| Dịch vụ      | Thư mục                  | Cổng | CSDL                                    | Phụ trách |
+| ------------ | ------------------------ | ---- | --------------------------------------- | --------- |
+| Student      | `apps/sinh-vien-service` | 3001 | `qldatn_sinhvien`                       | Khương    |
+| Topic        | `apps/de-tai-service`    | 3002 | `qldatn_detai`                          | Khang     |
+| Registration | `apps/dang-ky-service`   | 3003 | `qldatn_dangky`                         | Khoa      |
+| Auth         | `apps/auth-service`      | 3004 | chưa có (tài khoản admin lấy từ `.env`) | Nhóm      |
 
 Tất cả dịch vụ hiện dùng chung một MySQL server và một tài khoản, chỉ khác tên database. Mức này đủ cho môn học nhưng chưa phải cách ly hoàn toàn. Hướng nâng cấp: mỗi dịch vụ một user MySQL riêng, hoặc mỗi dịch vụ một container MySQL.
 
@@ -60,7 +61,8 @@ Tất cả dịch vụ hiện dùng chung một MySQL server và một tài kho�
 SOA-giua-ky-NestJS/
 ├── backend_nestjs/
 │   ├── apps/
-│   │   ├── sinh-vien-service/   # Student service (+ auth tạm thời)
+│   │   ├── auth-service/        # Auth service (login, refresh, logout)
+│   │   ├── sinh-vien-service/   # Student service
 │   │   ├── de-tai-service/      # Topic service
 │   │   ├── dang-ky-service/     # Registration service
 │   │   └── bai-giua-ky-soa/     # Bản giữa kỳ (gộp), giữ để đối chiếu, sẽ xóa sau
@@ -75,26 +77,26 @@ Mỗi dịch vụ có: `src/main.ts`, `src/<tên>-service.module.ts` (module g�
 
 ## Đối chiếu 7 tính chất SOA
 
-| Tính chất                            | Mức hiện tại                | Ghi chú                                                                                     |
-| ------------------------------------ | --------------------------- | ------------------------------------------------------------------------------------------- |
-| 1. Liên kết lỏng (NFR-01)            | Đáp ứng (chưa có container) | Cổng, tiến trình, CSDL riêng; gọi nhau qua HTTP. Chưa đóng gói Docker.                      |
-| 2. Sử dụng lại dịch vụ (NFR-04)      | Đáp ứng một phần            | Registration dùng lại API của Student và Topic.                                             |
-| 3. Bất đồng bộ (NFR-05)              | Chưa                        | Chưa có message queue.                                                                      |
-| 4. Quản lý chính sách (NFR-06)       | Tạm thời                    | Mỗi dịch vụ tự kiểm tra JWT bằng chung secret. Sẽ chuyển về API Gateway.                    |
-| 5. Khả năng cộng tác (NFR-03)        | Đáp ứng một phần            | REST/JSON. Chưa có tài liệu OpenAPI (Swagger).                                              |
-| 6. Dò tìm và ràng buộc động (NFR-07) | Chưa                        | Địa chỉ dịch vụ đang ghi trong `.env`.                                                      |
-| 7. Tự phục hồi (NFR-08)              | Đáp ứng một phần            | Trả 503 khi dịch vụ phụ thuộc không phản hồi. Chưa có health check, retry, circuit breaker. |
+| Tính chất                            | Mức hiện tại                | Ghi chú                                                                                                          |
+| ------------------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 1. Liên kết lỏng (NFR-01)            | Đáp ứng (chưa có container) | Cổng, tiến trình, CSDL riêng; gọi nhau qua HTTP. Chưa đóng gói Docker.                                           |
+| 2. Sử dụng lại dịch vụ (NFR-04)      | Đáp ứng một phần            | Registration dùng lại API của Student và Topic.                                                                  |
+| 3. Bất đồng bộ (NFR-05)              | Chưa                        | Chưa có message queue.                                                                                           |
+| 4. Quản lý chính sách (NFR-06)       | Tạm thời                    | Auth service cấp token; mỗi dịch vụ tự kiểm tra JWT bằng chung secret (`libs/common`). Sẽ chuyển về API Gateway. |
+| 5. Khả năng cộng tác (NFR-03)        | Đáp ứng một phần            | REST/JSON. Chưa có tài liệu OpenAPI (Swagger).                                                                   |
+| 6. Dò tìm và ràng buộc động (NFR-07) | Chưa                        | Địa chỉ dịch vụ đang ghi trong `.env`.                                                                           |
+| 7. Tự phục hồi (NFR-08)              | Đáp ứng một phần            | Trả 503 khi dịch vụ phụ thuộc không phản hồi. Chưa có health check, retry, circuit breaker.                      |
 
 ## API
 
 Mọi route (trừ login và refresh) cần header `Authorization: Bearer <access_token>`.
 
-| Dịch vụ             | Endpoint                                                      |
-| ------------------- | ------------------------------------------------------------- |
-| Auth (hiện ở :3001) | `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` |
-| Student :3001       | `POST/GET /sinh-vien`, `GET/PATCH/DELETE /sinh-vien/:MaSV`    |
-| Topic :3002         | `POST/GET /de-tai`, `GET/PUT/DELETE /de-tai/:id`              |
-| Registration :3003  | `POST/GET /dang-ky`, `GET/PATCH/DELETE /dang-ky/:id`          |
+| Dịch vụ            | Endpoint                                                      |
+| ------------------ | ------------------------------------------------------------- |
+| Auth :3004         | `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` |
+| Student :3001      | `POST/GET /sinh-vien`, `GET/PATCH/DELETE /sinh-vien/:MaSV`    |
+| Topic :3002        | `POST/GET /de-tai`, `GET/PUT/DELETE /de-tai/:id`              |
+| Registration :3003 | `POST/GET /dang-ky`, `GET/PATCH/DELETE /dang-ky/:id`          |
 
 Tên trường trong body (phân biệt hoa thường, trường lạ bị loại bỏ):
 
@@ -155,6 +157,7 @@ npm install
 4. **Chạy các dịch vụ**, mỗi dịch vụ một terminal, trong `backend_nestjs`:
 
 ```
+npx nest start auth-service
 npx nest start sinh-vien-service
 npx nest start de-tai-service
 npx nest start dang-ky-service
@@ -162,25 +165,25 @@ npx nest start dang-ky-service
 
 Mỗi dịch vụ in ra dòng "đang chạy ở cổng ...". Bật `sinh-vien-service` và `de-tai-service` trước `dang-ky-service`.
 
-5. **Lấy token** bằng `POST http://localhost:3001/auth/login`, rồi gửi kèm `Authorization: Bearer <access_token>` khi gọi các dịch vụ.
+5. **Lấy token** bằng `POST http://localhost:3004/auth/login` với body `{ "username", "password" }` (tài khoản `ADMIN_USER`, `ADMIN_PASS` trong `.env` gốc), rồi gửi kèm `Authorization: Bearer <access_token>` khi gọi các dịch vụ.
 
 Thư mục `apps/bai-giua-ky-soa` là bản giữa kỳ, chỉ giữ để đối chiếu và không chạy trong cấu hình mới.
 
 ## Giới hạn đã biết
 
 - Frontend chưa được cập nhật: `frontend_react/src/api.js` vẫn trỏ về backend gộp của bài giữa kỳ. Sẽ trỏ về API Gateway khi có.
-- Hash refresh token lưu trong bộ nhớ (restart dịch vụ thì phải đăng nhập lại), chỉ một phiên admin tại một thời điểm.
+- Auth service chưa có CSDL riêng và chưa quản lý tài khoản (FR-22): chỉ có tài khoản admin lấy từ `.env`.
+- Hash refresh token lưu trong bộ nhớ (restart Auth service thì phải đăng nhập lại), chỉ một phiên admin tại một thời điểm.
 - Các dịch vụ chia sẻ một MySQL server và một tài khoản.
 - Tên trường chưa thống nhất giữa các dịch vụ (`MaSV` ở Student, `maSV` ở Registration). Sẽ chuẩn hóa sau.
 - Mô hình dữ liệu hiện chỉ có các cột cơ bản; chưa có ngành, GPA, trạng thái đề tài như báo cáo yêu cầu (FR-03, FR-06, FR-11).
 
 ## Lộ trình
 
-1. Tách Auth Service (cổng 3004), bỏ `auth/` khỏi Student service.
-2. API Gateway (cổng 3000) làm điểm vào chung, kiểm token và phân quyền tập trung (NFR-06).
-3. Docker Compose, mỗi dịch vụ một container (NFR-01).
-4. Cập nhật frontend gọi qua Gateway.
-5. Tùy thời gian: Notification qua hàng đợi (NFR-05), health check, retry, circuit breaker (NFR-08), Swagger (FR-24), mở rộng nghiệp vụ.
+1. API Gateway (cổng 3000) làm điểm vào chung, kiểm token và phân quyền tập trung (NFR-06).
+2. Docker Compose, mỗi dịch vụ một container (NFR-01).
+3. Cập nhật frontend gọi qua Gateway.
+4. Tùy thời gian: Auth có CSDL riêng và quản lý tài khoản (FR-22), Notification qua hàng đợi (NFR-05), health check, retry, circuit breaker (NFR-08), Swagger (FR-24), mở rộng nghiệp vụ.
 
 ## Quy tắc làm việc nhóm
 

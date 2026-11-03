@@ -11,10 +11,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2023",
-    "types": [
-      "node",
-      "jest"
-    ],
+    "types": ["node", "jest"],
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
@@ -22,12 +19,8 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "paths": {
-      "@app/common": [
-        "./libs/common/src"
-      ],
-      "@app/common/*": [
-        "./libs/common/src/*"
-      ]
+      "@app/common": ["./libs/common/src"],
+      "@app/common/*": ["./libs/common/src/*"]
     }
   },
   "files": [],
@@ -43,6 +36,12 @@
     },
     {
       "path": "./apps/dang-ky-service/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/auth-service/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/auth-service/tsconfig.app.json"
     }
   ]
 }
