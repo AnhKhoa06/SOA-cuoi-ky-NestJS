@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonModule } from '@app/common';
 import { SinhVienModule } from './sinh-vien.module';
-import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-import { CommonModule } from '@app/common/common.module';
 
 @Module({
   imports: [
@@ -11,18 +10,20 @@ import { CommonModule } from '@app/common/common.module';
       isGlobal: true,
       envFilePath: ['apps/sinh-vien-service/.env', '.env'],
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456', // sửa đúng mật khẩu máy bạn
-      database: 'qldatn_sinhvien',
-      autoLoadEntities: true,
-      synchronize: false,
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get('DB_HOST'),
+        port: Number(config.get('DB_PORT')),
+        username: config.get('DB_USER'),
+        password: config.get('DB_PASS'),
+        database: config.get('DB_NAME'),
+        autoLoadEntities: true,
+        synchronize: false,
+      }),
     }),
     SinhVienModule,
-    AuthModule,
     CommonModule,
   ],
 })

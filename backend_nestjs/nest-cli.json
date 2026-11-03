@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/bai-giua-ky-soa",
   "projects": {
+    "auth-service": {
+      "type": "application",
+      "root": "apps/auth-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth-service/tsconfig.app.json"
+      }
+    },
     "bai-giua-ky-soa": {
       "type": "application",
       "root": "apps/bai-giua-ky-soa",
