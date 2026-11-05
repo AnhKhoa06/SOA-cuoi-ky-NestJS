@@ -2,7 +2,7 @@
 
 Đồ án môn **Kiến trúc hướng dịch vụ (SOA)** – Nhóm 5, giảng viên hướng dẫn: Võ Thị Mỹ.
 
-Hệ thống quản lý quy trình đồ án tốt nghiệp của Khoa: sinh viên, đề tài, đăng ký đề tài, xác thực. Backend NestJS + MySQL, frontend React (Vite). Dự án phát triển từ bài giữa kỳ (một backend gộp, cổng 3000); bài cuối kỳ **tách thành các dịch vụ độc lập, mỗi dịch vụ chạy trên một cổng và có cơ sở dữ liệu riêng**, theo nguyên tắc SOA. Backend gộp của giữa kỳ đã được gỡ khỏi mã nguồn.
+Hệ thống quản lý quy trình đồ án tốt nghiệp của Khoa: sinh viên, đề tài, đăng ký đề tài, xác thực. Backend NestJS + MySQL, frontend React (Vite). Hệ thống xây dựng theo kiến trúc hướng dịch vụ (SOA): các dịch vụ độc lập, **mỗi dịch vụ chạy trên một cổng và có cơ sở dữ liệu riêng**, giao tiếp với nhau qua HTTP/REST và đi qua một API Gateway.
 
 Tài liệu phân tích bài toán (yêu cầu chức năng FR-01 → FR-24, phi chức năng NFR-01 → NFR-12) nằm trong báo cáo của nhóm. Mã yêu cầu trong README này lấy theo báo cáo đó.
 
